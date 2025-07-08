@@ -27,7 +27,7 @@ const Navbar = () => {
     { name: 'Events', href: '/events' },
     { name: 'Certify', href: '/certify' },
     { name: 'Documentation', href: '/documentation' },
-    { name: 'New', href: '/new' },
+    { name: 'News', href: '/new' },
     { name: 'About Us', href: '/about' },
     { name: 'Contact', href: '/contact' },
   ];
@@ -38,6 +38,10 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-20">
           <Link to="/" className="flex items-center">
             <img src={logoImage} alt="Security Eagles Logo" className="h-12 w-auto" />
+            <div className="flex flex-col ml-3">
+              <span className="font-bold text-xl text-white leading-tight">SecurityEagles</span>
+              <span className="text-xs text-green-400 mt-0.5 ml-14" style={{lineHeight: '1'}}>By Atlas Defender</span>
+            </div>
           </Link>
 
           {/* Desktop Nav */}
@@ -49,13 +53,13 @@ const Navbar = () => {
                   key={link.name}
                   to={link.href}
                   className={`relative text-sm font-medium transition-all duration-300 ease-out group ${
-                    isActive ? "text-white" : "text-gray-300 hover:text-white"
+                    isActive ? "text-green-400" : "text-gray-300 hover:text-green-400"
                   }`}
                 >
                   {link.name}
-                  {/* Animated underline */}
+                  {/* Animated underline (now further below the text) */}
                   <span
-                    className={`absolute left-0 bottom-0 h-0.5 bg-green-400 transition-all duration-300 ease-out ${
+                    className={`absolute left-0 bottom-[-30px] h-1 bg-green-400 transition-all duration-300 ease-out ${
                       isActive ? "w-full" : "w-0 group-hover:w-full"
                     }`}
                   />
@@ -68,14 +72,17 @@ const Navbar = () => {
             <Link to="/login">
               <Button
                 variant="ghost"
-                className="text-gray-300 hover:text-white hover:bg-transparent font-medium text-sm px-0 transition-all duration-300 ease-out hover:scale-105"
+                className="relative text-gray-300 hover:text-white hover:bg-transparent font-medium text-sm px-0 transition-all duration-300 ease-out hover:scale-105
+                  after:content-[''] after:absolute after:left-0 after:right-0 after:bottom-0 after:h-0.5 after:bg-green-400 after:scale-x-0 after:transition-transform after:duration-300 after:origin-left
+                  hover:after:scale-x-100"
+                style={{ overflow: 'visible' }}
               >
                 Login
               </Button>
             </Link>
             <Link to="/guest">
               <Button className="bg-green-400 hover:bg-green-500 text-black font-semibold px-6 py-2 rounded-md text-sm transition-all duration-300 ease-out hover:scale-105 hover:shadow-lg hover:shadow-green-400/25 transform">
-                Guest
+                Get Started 
               </Button>
             </Link>
             <Button
@@ -115,14 +122,14 @@ const Navbar = () => {
                   key={link.name}
                   to={link.href}
                   className={`relative text-sm font-medium transition-all duration-300 ease-out py-2 group ${
-                    isActive ? "text-white" : "text-gray-300 hover:text-white"
+                    isActive ? "text-green-400" : "text-gray-300 hover:text-green-400"
                   }`}
                   onClick={() => setIsOpen(false)}
                 >
                   {link.name}
-                  {/* Mobile animated underline */}
+                  {/* Mobile animated underline (now further below the text) */}
                   <span
-                    className={`absolute left-0 bottom-0 h-0.5 bg-green-400 transition-all duration-300 ease-out ${
+                    className={`absolute left-0 bottom-[-6px] h-1.5 bg-green-400 transition-all duration-300 ease-out ${
                       isActive ? "w-full" : "w-0 group-hover:w-full"
                     }`}
                   />

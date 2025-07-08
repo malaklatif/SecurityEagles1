@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useRef, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { motion, useScroll, useTransform, useInView } from "framer-motion"
 import Image  from '../Image/ImageHawk.png'
@@ -14,6 +15,7 @@ import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 import Typewriter from "../components/ui/Typewriter"
 import { AnimatedCounter } from "../components/ui/animated-counter"
+import LoadingScreen from '../components/LoadingScreen'
 
 const steps = [
   {
@@ -79,174 +81,13 @@ const features = [
   },
 ]
 
-const LoadingScreen = ({ isLoading, onLoadingComplete }) => {
-  const [progress, setProgress] = useState(0)
-
-  useEffect(() => {
-    if (isLoading) {
-      const timer = setInterval(() => {
-        setProgress(prev => {
-          if (prev >= 100) {
-            clearInterval(timer)
-            setTimeout(() => {
-              onLoadingComplete()
-            }, 500)
-            return 100
-          }
-          return prev + Math.random() * 15
-        })
-      }, 100)
-
-      return () => clearInterval(timer)
-    }
-  }, [isLoading, onLoadingComplete])
-
-  return (
-    <motion.div
-      className="fixed inset-0 z-50 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center"
-      initial={{ opacity: 1 }}
-      animate={{ opacity: isLoading ? 1 : 0 }}
-      transition={{ duration: 0.5 }}
-      onAnimationComplete={() => {
-        if (!isLoading) {
-          // Remove from DOM after fade out
-          setTimeout(() => {
-            // This will be handled by the parent component
-          }, 1500)
-        }
-      }}
-    >
-      <div className="text-center space-y-8">
-        {/* Logo and Title */}
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="space-y-4"
-        >
-          <motion.div
-            className="w-20 h-20 mx-auto relative"
-            animate={{ rotate: [0, 360] }}
-            transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
-          >
-            <img src={Image1} alt="SecurityEagles Logo" className="w-full h-full object-contain" />
-          </motion.div>
-          <motion.h1
-            className="text-3xl font-bold text-white"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-          >
-            SecurityEagles
-          </motion.h1>
-          <motion.p
-            className="text-gray-400 text-lg"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-          >
-            Loading your learning experience...
-          </motion.p>
-        </motion.div>
-
-        {/* Progress Bar */}
-        <motion.div
-          className="w-80 mx-auto space-y-4"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
-        >
-          <div className="w-full bg-slate-700 rounded-full h-2">
-            <motion.div
-              className="bg-gradient-to-r from-green-400 to-blue-500 h-2 rounded-full"
-              initial={{ width: 0 }}
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.3 }}
-            />
-          </div>
-          <div className="text-sm text-gray-400">
-            {Math.round(progress)}% Complete
-          </div>
-        </motion.div>
-
-        {/* Loading Dots */}
-        <motion.div
-          className="flex justify-center space-x-2"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 1 }}
-        >
-          {[0, 1, 2].map((i) => (
-            <motion.div
-              key={i}
-              className="w-3 h-3 bg-green-400 rounded-full"
-              animate={{
-                scale: [1, 1.5, 1],
-                opacity: [0.5, 1, 0.5],
-              }}
-              transition={{
-                duration: 1.5,
-                repeat: Number.POSITIVE_INFINITY,
-                delay: i * 0.2,
-              }}
-            />
-          ))}
-        </motion.div>
-
-        {/* Loading Messages */}
-        <motion.div
-          className="text-gray-500 text-sm"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 1.2 }}
-        >
-          <motion.div
-            animate={{ opacity: [0, 1, 0] }}
-            transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
-          >
-            Initializing learning modules...
-          </motion.div>
-        </motion.div>
-      </div>
-
-      {/* Background Animation */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute top-20 left-20 w-32 h-32 bg-green-500/20 rounded-full blur-xl"
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.6, 0.3],
-          }}
-          transition={{
-            duration: 4,
-            repeat: Number.POSITIVE_INFINITY,
-            ease: "easeInOut",
-          }}
-        />
-        <motion.div
-          className="absolute bottom-40 right-32 w-24 h-24 bg-blue-500/20 rounded-full blur-xl"
-          animate={{
-            scale: [1.2, 1, 1.2],
-            opacity: [0.4, 0.7, 0.4],
-          }}
-          transition={{
-            duration: 3,
-            repeat: Number.POSITIVE_INFINITY,
-            ease: "easeInOut",
-            delay: 1,
-          }}
-        />
-      </div>
-    </motion.div>
-  )
-}
-
 const Hero = () => {
   const [email, setEmail] = useState("")
   const [isLoading, setIsLoading] = useState(true)
   const { scrollYProgress } = useScroll()
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"])
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
+  const navigate = useNavigate()
 
   // Loading effect
   useEffect(() => {
@@ -373,25 +214,51 @@ const Hero = () => {
               {/* Email signup form */}
               <motion.form
                 onSubmit={handleSubmit}
-                className="flex gap-4 max-w-md"
+                className="w-full max-w-md mx-auto flex flex-row gap-4"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 1 }}
               >
                 <Input
                   type="email"
-                  placeholder="Email"
+                  placeholder="Enter your email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="bg-slate-800/50 border-slate-600 text-white placeholder:text-gray-400 focus:border-green-400 transition-all duration-300"
                   required
+                  className="
+                    flex-1
+                    bg-slate-800
+                    border border-slate-700
+                    text-white
+                    placeholder:text-gray-400
+                    focus:border-green-500
+                    focus:ring-1 focus:ring-green-500
+                    rounded-lg
+                    h-11
+                    shadow-sm
+                    transition-all duration-300
+                    outline-none
+                  "
                 />
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                   <Button
                     type="submit"
-                    className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-emerald-700 hover:to-emerald-800 text-white font-semibold px-12 py-2 rounded-lg shadow-lg hover:shadow-xl hover:shadow-green-500/25 transition-all duration-300 border-0 min-w-[160px]"
+                    className="
+                      min-w-[140px]
+                      bg-gradient-to-r from-green-500 to-emerald-600
+                      hover:from-green-600 hover:to-emerald-700
+                      text-white
+                      font-semibold
+                      h-11
+                      rounded-lg
+                      shadow-md
+                      transition-all duration-300
+                      border-0
+                      px-6
+                      text-base
+                    "
                   >
-                    Join for FREE
+                    Join FREE
                   </Button>
                 </motion.div>
               </motion.form>
@@ -652,7 +519,9 @@ const Hero = () => {
             </div>
 
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button className="bg-gradient-to-r from-green-500 to-emerald-600 text-white font-mono font-bold px-8 py-3 rounded-lg shadow-lg hover:shadow-green-500/25 transition-all duration-300 uppercase tracking-wider group">
+              <Button className="bg-gradient-to-r from-green-500 to-emerald-600 text-white font-mono font-bold px-8 py-3 rounded-lg shadow-lg hover:shadow-green-500/25 transition-all duration-300 uppercase tracking-wider group"
+                onClick={() => navigate('/labs')}
+              >
                 <Play className="w-4 h-4 mr-2 group-hover:animate-pulse" />
                 <span className="bg-clip-text text-white bg-gradient-to-r from-green-500 to-emerald-600"> Try a Free Lab</span>
               </Button>
@@ -723,7 +592,7 @@ const Hero = () => {
                       transition={{ delay: 0.5 }}
                     >
                       <span className="text-gray-500">root@lab:</span>
-                      <Typewriter text="$ docker run -d --name web-server nginx" speed={40} delay={500} className="text-green-500 font-mono" />
+                      <span className="text-green-400 font-mono">$ docker run -d --name web-server nginx</span>
                     </motion.div>
 
                     <motion.div
@@ -742,7 +611,7 @@ const Hero = () => {
                       transition={{ delay: 1.5 }}
                     >
                       <span className="text-gray-500">root@lab:</span>
-                      <Typewriter text="$ kubectl apply -f deployment.yaml" speed={40} delay={500} className="text-blue-400 font-mono" />
+                      <span className="text-blue-400 font-mono">$ kubectl apply -f deployment.yaml</span>
                     </motion.div>
 
                     <motion.div
@@ -754,21 +623,18 @@ const Hero = () => {
                       {">"} deployment.apps/web-app created
                     </motion.div>
 
-                    <motion.div
-                      className="flex items-center gap-2 text-green-500 mt-2"
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 2.5 }}
-                    >
-                      <span className="text-gray-500">root@lab:</span>
-                      <motion.span
-                        animate={{ opacity: [0, 1, 0] }}
-                        transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, delay: 2.5 }}
-                        className='text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-emerald-600'
-                      >
-                        $ _
-                      </motion.span>
-                    </motion.div>
+                    <span className="text-gray-500">root@lab:</span>
+
+                    <Typewriter
+                      text={[
+                        " $ Welcome To Security Eagles",
+                        " $ The Premier IT Infrastructure & Cybersecurity Community"
+                      ]}
+                      speed={40}
+                      delay={1000}
+                      loop={true}
+                      className="text-green-400 font-mono"
+                    />
                   </motion.div>
 
                   <div className="flex items-center justify-between pt-4 border-t border-gray-800">
@@ -980,6 +846,7 @@ const Hero = () => {
             <Button
               variant="outline"
               className=" text-green-500 border-white hover:bg-green-500 hover:text-black font-mono font-bold px-8 py-3 rounded-lg shadow-lg hover:shadow-green-500/25 transition-all duration-300 uppercase tracking-wider"
+              onClick={() => navigate('/events')}
             >
               {">"} Access All Events
             </Button>
@@ -1109,7 +976,9 @@ const Hero = () => {
               </div>
 
               <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                <Button className="bg-green-500 hover:bg-[#8FDF00] text-black font-mono font-bold px-8 py-3 rounded-lg shadow-lg hover:shadow-green-500/25 transition-all duration-300 uppercase tracking-wider">
+                <Button className="bg-green-500 hover:bg-[#8FDF00] text-black font-mono font-bold px-8 py-3 rounded-lg shadow-lg hover:shadow-green-500/25 transition-all duration-300 uppercase tracking-wider"
+                  onClick={() => navigate('/certify')}
+                >
                   {">"} View Certificate Programs
                 </Button>
               </motion.div>
@@ -1199,6 +1068,7 @@ const Hero = () => {
               <Button
                 size="lg"
                 className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-16 py-3 text-lg font-bold rounded-lg shadow-xl hover:shadow-2xl hover:shadow-blue-500/30 transition-all duration-300 border-0 group min-w-[220px]"
+                onClick={() => navigate('/labs')}
               >
                 Start Free Training
                 <motion.div
@@ -1215,6 +1085,7 @@ const Hero = () => {
                 variant="outline"
                 size="lg"
                 className="border-2 border-slate-600 text-slate-200 hover:bg-slate-800 hover:border-slate-500 hover:text-white px-16 py-3 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 bg-slate-900 min-w-[180px]"
+                onClick={() => navigate('/about')}
               >
                 Learn More
               </Button>
@@ -1251,51 +1122,6 @@ const Hero = () => {
           </motion.a>
         </motion.div>
       </section>
-
-      {/* Animated Stats Section */}
-      <AnimatedStatsSection />
-
-      {/* Footer */}
-      <footer className="bg-slate-900 border-t border-slate-800 py-10 mt-16">
-        <motion.div
-          className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-8"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
-          {/* Brand and tagline */}
-          <div className="flex items-center gap-3">
-            <motion.div className="w-10 h-10" whileHover={{ rotate: 360 }} transition={{ duration: 0.6 }}>
-              <img src={Image} alt="logo" className="h-10 w-10" />
-            </motion.div>
-            <div>
-              <div className="text-lg font-bold text-white">SecurityEagles</div>
-              <div className="text-xs text-blue-400">Future of Learning</div>
-            </div>
-          </div>
-          {/* Quick Links */}
-          <div className="flex gap-6 text-slate-300 text-sm">
-            {["Privacy Policy", "Terms", "Contact"].map((link, index) => (
-              <motion.a
-                key={link}
-                href="#"
-                className="hover:text-blue-400 transition-colors"
-                whileHover={{ scale: 1.02 }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                {link}
-              </motion.a>
-            ))}
-          </div>
-          {/* Copyright */}
-          <div className="text-slate-400 text-xs text-center md:text-right">
-            © 2024 Security Community. All rights reserved.
-          </div>
-        </motion.div>
-      </footer>
     </motion.div>
   )
 }
@@ -1335,75 +1161,6 @@ const useIntersectionInView = (options = {}) => {
   }, [threshold, rootMargin, triggerOnce, hasTriggered])
 
   return { ref, isInView }
-}
-
-function AnimatedStatsSection() {
-  const { ref, isInView } = useIntersectionInView({ threshold: 0.3 })
-
-  const stats = [
-    {
-      icon: Award,
-      value: 8,
-      suffix: "+",
-      label: "Years of Excellence",
-      color: "text-blue-400",
-      delay: 0,
-    },
-    {
-      icon: Settings,
-      value: 150,
-      suffix: "+",
-      label: "Projects Completed",
-      color: "text-purple-400",
-      delay: 200,
-    },
-    {
-      icon: Users,
-      value: 500,
-      suffix: "+",
-      label: "Community Members",
-      color: "text-teal-400",
-      delay: 400,
-    },
-  ]
-
-  return (
-    <section className="bg-white py-16 px-4" ref={ref}>
-      <div className="container mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-          {stats.map((stat, index) => {
-            const Icon = stat.icon
-            return (
-              <div
-                key={index}
-                className="flex flex-col items-center space-y-4 transform transition-all duration-700 ease-out"
-                style={{
-                  transitionDelay: `${stat.delay}ms`,
-                  opacity: isInView ? 1 : 0,
-                  transform: isInView ? "translateY(0)" : "translateY(20px)",
-                }}
-              >
-                <Icon className="w-8 h-8 text-black transition-transform duration-300 hover:scale-110" />
-                <div>
-                  <div className={`text-4xl md:text-5xl font-bold ${stat.color} mb-2 transition-colors duration-300`}>
-                    <AnimatedCounter
-                      end={stat.value}
-                      suffix={stat.suffix}
-                      duration={2500 + stat.delay}
-                      isActive={isInView}
-                    />
-                  </div>
-                  <p className="text-black text-lg font-medium transition-colors duration-300 hover:text-white">
-                    {stat.label}
-                  </p>
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      </div>
-    </section>
-  )
 }
 
 export default Hero

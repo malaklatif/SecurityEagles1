@@ -2,7 +2,9 @@
   "name": "securityeagles",
   "version": "0.1.0",
   "private": true,
+  "proxy": "https://1ce5-105-74-64-145.ngrok-free.app",
   "dependencies": {
+    "axios": "^1.10.0",
     "framer-motion": "^10.18.0",
     "lucide-react": "^0.522.0",
     "react": "^18.2.0",

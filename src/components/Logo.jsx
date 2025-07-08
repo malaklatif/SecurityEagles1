@@ -1,6 +1,6 @@
 import React from 'react';
 import { Shield } from 'lucide-react';
-import Image from '../Image/logo.jpg'
+import Image from '../Image/Logo.png'
 const Logo = () => {
   return (
     <a href="/" className="flex items-center space-x-2">

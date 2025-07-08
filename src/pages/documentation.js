@@ -1,4 +1,3 @@
-
 import { useState } from "react"
 import { Search, Clock, Eye, Heart, Filter, GraduationCap, Layers, FileText } from "lucide-react"
 import { Button } from "../components/ui/button"
@@ -243,37 +242,48 @@ export default function DocumentationPage() {
 
         {/* Main Content */}
         <main className="flex-1 max-w-6xl mx-auto px-8 py-8">
+          {/* Search Bar - Now always at the top */}
+          <div className="relative max-w-4xl w-full mb-8">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Input
+              type="text"
+              placeholder="Search documentation..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-16 py-3 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent max-w-3xl"
+            />
+          </div>
+
           {/* Section Switcher Buttons */}
           <div className="flex justify-center mb-12">
-        <div className="inline-flex bg-white rounded-xl shadow-sm border border-gray-200 p-1.5 gap-1">
-          {tabs.map((tab) => {
-            const Icon = tab.icon
-            const isActive = activeMainSection === tab.id
+            <div className="inline-flex bg-white rounded-xl shadow-sm border border-gray-200 p-1.5 gap-1">
+              {tabs.map((tab) => {
+                const Icon = tab.icon
+                const isActive = activeMainSection === tab.id
 
-            return (
-              <button
-                key={tab.id}
-                className={`
-                  relative flex items-center gap-3 px-6 py-3 rounded-lg font-semibold text-sm transition-all duration-300 border focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-opacity-50 min-w-[140px] justify-center
-                  ${
-                    isActive
-                      ? `${tab.colors.active} ${tab.colors.activeText} ${tab.colors.activeBorder} shadow-md transform scale-105 focus:ring-current`
-                      : `bg-white text-gray-700 border-gray-200 ${tab.colors.hover} focus:ring-gray-300`
-                  }
-                `}
-                onClick={() => setActiveMainSection(tab.id)}
-                aria-pressed={isActive}
-                role="tab"
-              >
-                <Icon className={`w-4 h-4 ${isActive ? "text-white" : "text-gray-500"}`} />
-                <span className="font-medium tracking-wide">{tab.label}</span>
-                {isActive && <div className="absolute inset-0 rounded-lg bg-white/10 pointer-events-none" />}
-              </button>
-            )
-          })}
-        </div>
-      </div>
-
+                return (
+                  <button
+                    key={tab.id}
+                    className={`
+                      relative flex items-center gap-3 px-6 py-3 rounded-lg font-semibold text-sm transition-all duration-300 border focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-opacity-50 min-w-[140px] justify-center
+                      ${
+                        isActive
+                          ? `${tab.colors.active} ${tab.colors.activeText} ${tab.colors.activeBorder} shadow-md transform scale-105 focus:ring-current`
+                          : `bg-white text-gray-700 border-gray-200 ${tab.colors.hover} focus:ring-gray-300`
+                      }
+                    `}
+                    onClick={() => setActiveMainSection(tab.id)}
+                    aria-pressed={isActive}
+                    role="tab"
+                  >
+                    <Icon className={`w-4 h-4 ${isActive ? "text-white" : "text-gray-500"}`} />
+                    <span className="font-medium tracking-wide">{tab.label}</span>
+                    {isActive && <div className="absolute inset-0 rounded-lg bg-white/10 pointer-events-none" />}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
 
           {/* Main Section Content */}
           {activeMainSection === "learningPath" && (
@@ -314,19 +324,6 @@ export default function DocumentationPage() {
 
           {activeMainSection === "generalPost" && (
             <div className="space-y-6">
-              {/* Search Bar */}
-              <div className="relative max-w-md">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  type="text"
-                  placeholder="Search documentation..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 pr-16 py-3 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-               
-              </div>
-
               {/* Tab Navigation */}
               <div className="flex items-center gap-4 mb-6">
                 <div className="flex items-center gap-2">
