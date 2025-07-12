@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import { ChevronDown } from "lucide-react";
 
 const Select = ({ value, onValueChange, children, ...props }) => {
   return React.cloneElement(children, { value, onValueChange, ...props });
@@ -43,7 +42,9 @@ const SelectTrigger = React.forwardRef(({ className, children, onValueChange, ..
         <span className={selectedValue ? "text-gray-900" : "text-gray-500"}>
           {selectedLabel || props.placeholder || "Select option"}
         </span>
-        <ChevronDown className={`h-4 w-4 text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+        <svg className={`h-4 w-4 text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
       </button>
       
       {isOpen && (

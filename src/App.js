@@ -1,10 +1,10 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import About from './pages/About';
 import Events from './pages/Events';
 import Certify from './pages/Certify';
-import Internships from './pages/Internships';
+import Internships from './pages/Internships.jsx';
 import Contact from './pages/Contact';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -17,7 +17,6 @@ import Footer from './components/Footer';
 import { useState, useEffect } from 'react';
 import Dashboard from './pages/Dashboard';
 import EventDetailsPage from './pages/EventDetails';
-import { InternshipDetailPage } from './pages/Internships';
 
 function AppContent() {
   const location = useLocation();
@@ -43,8 +42,7 @@ function AppContent() {
         <Route path="/documentation" element={<Documentation />} />
         <Route path="/labs" element={<Labs />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/event/:slug" element={<EventDetailsPage />} />
-        <Route path="/internships/:id" element={<InternshipDetailPage />} /> 
+        <Route path="/event/:slug" element={<EventDetailsPage />} /> 
       </Routes>
       {!hideNavbar && <Footer />}
     </div>
@@ -53,21 +51,18 @@ function AppContent() {
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
-  const location = useLocation();
 
   useEffect(() => {
     setIsLoading(true);
     const timer = setTimeout(() => setIsLoading(false), 2000);
     return () => clearTimeout(timer);
-  }, [location]);
+  }, []);
 
   if (isLoading) {
     return <LoadingScreen isLoading={isLoading} onLoadingComplete={() => setIsLoading(false)} />;
   }
 
-  return (
-      <AppContent />
-  );
+  return <AppContent />;
 }
 
 export default App;

@@ -4,7 +4,9 @@
   "private": true,
   "proxy": "https://1ce5-105-74-64-145.ngrok-free.app",
   "dependencies": {
+    "@radix-ui/react-dialog": "^1.1.14",
     "axios": "^1.10.0",
+    "clsx": "^2.1.1",
     "es-toolkit": "^1.39.7",
     "framer-motion": "^10.18.0",
     "lucide-react": "^0.522.0",
@@ -13,7 +15,8 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^7.6.2",
     "react-scripts": "5.0.1",
-    "recharts": "^3.1.0"
+    "recharts": "^3.1.0",
+    "tailwind-merge": "^3.3.1"
   },
   "scripts": {
     "start": "react-scripts start",
