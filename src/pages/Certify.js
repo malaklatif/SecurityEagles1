@@ -330,9 +330,6 @@ export default function CertificationPage() {
       <div className="relative z-10">
         {/* Breadcrumb */}
         <div className="container mx-auto px-4 py-6">
-          <div className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white/60 backdrop-blur-sm border border-white/20 text-gray-600 mb-4">
-            <span>Certification Tests</span>
-          </div>
           <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-900 via-green-500 to-blue-900 bg-clip-text text-transparent">
             Get Certified
           </h1>
@@ -440,7 +437,7 @@ export default function CertificationPage() {
                             >
                               {cert.level}
                             </span>
-                            <div className="w-3 h-3 bg-gradient-to-r from-blue-900 to-green-500 rounded-full"></div>
+                            <div className="w-3 h-3 bg-gradient-to-r from-blue-900 to-green-500 rounded-full shadow-lg shadow-green-200/60 animate-pulse"></div>
                           </div>
                           <h3 className="font-bold text-xl text-gray-900 mb-3 group-hover:text-blue-900 transition-colors">
                             {cert.title}
@@ -482,7 +479,7 @@ export default function CertificationPage() {
                             >
                               {cert.level}
                             </span>
-                            <div className="w-3 h-3 bg-gradient-to-r from-green-500 to-blue-900 rounded-full"></div>
+                            <div className="w-3 h-3 bg-gradient-to-r from-green-500 to-blue-900 rounded-full shadow-lg shadow-green-200/60 animate-pulse"></div>
                           </div>
                           <h3 className="font-bold text-xl text-gray-900 mb-3 group-hover:text-blue-900 transition-colors">
                             {cert.title}

@@ -213,7 +213,7 @@ export default function DocumentationPage() {
                     <a
                       key={idx}
                       href={item.href}
-                      className="block text-sm text-gray-700 hover:text-green-600 py-1 px-2 rounded hover:bg-green-50"
+                      className="block text-sm text-gray-700 hover:text-orange-600 py-1 px-2 rounded hover:bg-orange-50"
                     >
                       {item.title}
                     </a>
@@ -229,7 +229,7 @@ export default function DocumentationPage() {
                     <a
                       key={idx}
                       href={item.href}
-                      className="block text-sm text-gray-700 hover:text-yellow-600 py-1 px-2 rounded hover:bg-yellow-50"
+                      className="block text-sm text-gray-700 hover:text-green-600 py-1 px-2 rounded hover:bg-green-50"
                     >
                       {item.title}
                     </a>

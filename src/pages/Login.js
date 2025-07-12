@@ -5,6 +5,7 @@ import { Input } from '../components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Eye, EyeOff, Mail, Lock, AlertCircle, CheckCircle, User } from 'lucide-react';
 import apiService from '../config/api';
+import mockUsers from '../mockUsers.json'; // Adjust path if needed
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -53,23 +54,18 @@ const Login = () => {
     setSuccess('');
 
     try {
-      const response = await apiService.login({
-        username: formData.username,
-        password: formData.password
-      });
+      const user = mockUsers.find(
+        u => u.username === formData.username && u.password === formData.password
+      );
 
-      if (response && response.access_token) {
-        // Store tokens
-        localStorage.setItem('access_token', response.access_token);
-        if (response.refresh_token) {
-          localStorage.setItem('refresh_token', response.refresh_token);
-        }
-        
+      if (user) {
+        localStorage.setItem('access_token', user.access_token);
+        localStorage.setItem('refresh_token', user.refresh_token);
+        localStorage.setItem('username', user.username);
+        localStorage.setItem('role', user.role);
         setSuccess('Login successful! Redirecting...');
-        
-        // Redirect to home page after a short delay
         setTimeout(() => {
-          navigate('/');
+          navigate('/dashboard');
         }, 1500);
       } else {
         setError('Invalid login credentials');
@@ -263,4 +259,4 @@ const Login = () => {
   );
 };
 
-export default Login; 
+export default Login;

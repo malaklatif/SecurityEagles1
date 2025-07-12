@@ -29,4 +29,9 @@ const CardDescription = React.forwardRef(({ className, ...props }, ref) => (
 ));
 CardDescription.displayName = "CardDescription";
 
-export { Card, CardContent, CardHeader, CardTitle, CardDescription }; 
+const CardFooter = React.forwardRef(({ className, ...props }, ref) => (
+  <div ref={ref} className={`p-6 pt-0 ${className}`} {...props} />
+));
+CardFooter.displayName = "CardFooter";
+
+export { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }; 

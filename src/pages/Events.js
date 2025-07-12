@@ -9,7 +9,7 @@ import { Calendar, Clock, MapPin, Users, Star, ArrowRight, Globe, Import, Search
 import { motion } from "framer-motion"
 import Image from '../Image/ImageHawk.png'
 import Image1 from '../Image/Logo1.png'
-import apiService from '../config/api'
+import { staticEvents } from '../mockEvents'
 
 export default function EventsPage() {
   const [events, setEvents] = useState([])
@@ -26,143 +26,34 @@ export default function EventsPage() {
   const [isOnlineOnly, setIsOnlineOnly] = useState(false)
   const [registering, setRegistering] = useState(null)
   const [currentPage, setCurrentPage] = useState(1)
-  const [hasNextPage, setHasNextPage] = useState(false)
-  const [hasPrevPage, setHasPrevPage] = useState(false)
+  const eventsPerPage = 3;
   const [totalEvents, setTotalEvents] = useState(0)
-
-  // Define static events
-  const staticEvents = [
-    {
-      id: 'static-1',
-      title: 'Security Eagles Launch',
-      description: 'Kickoff event for the Security Eagles community. Meet the founders, learn about our mission, and get a sneak peek at upcoming labs and features.',
-      start_time: '2024-07-01T18:00:00Z',
-      duration_hours: 2,
-      location: 'Online',
-      attendee_count: 150,
-      max_attendees: 500,
-      category: { slug: 'webinar', name: 'Webinar' },
-      priority: 'normal',
-      views: 1200,
-    },
-    {
-      id: 'static-2',
-      title: 'Cloud Security Bootcamp',
-      description: 'A hands-on bootcamp covering cloud security best practices, IAM, and real-world attack simulations.',
-      start_time: '2024-07-15T15:00:00Z',
-      duration_hours: 3,
-      location: 'Security Eagles HQ',
-      attendee_count: 80,
-      max_attendees: 100,
-      category: { slug: 'workshop', name: 'Workshop' },
-      priority: 'high',
-      views: 800,
-    },
-    {
-      id: 'static-3',
-      title: 'Capture The Flag (CTF) Challenge',
-      description: 'Test your skills in our first CTF event! Open to all skill levels, with prizes for top teams.',
-      start_time: '2024-08-05T10:00:00Z',
-      duration_hours: 4,
-      location: 'Online',
-      attendee_count: 200,
-      max_attendees: 300,
-      category: { slug: 'competition', name: 'Competition' },
-      priority: 'normal',
-      views: 1500,
-    },
-  ];
 
   // Check if user is logged in
   const isLoggedIn = () => {
     return !!localStorage.getItem('access_token')
   }
 
-  // Fetch events with enhanced filtering and pagination
-  const fetchEvents = async (page = 1, search = '', category = '', eventType = '', priority = '', isPhysical = null) => {
-    try {
-      setLoading(true)
-      const data = await apiService.getEvents(page, search, category)
-      console.log('Events API response:', data);
-      
-      if (data) {
-        setEvents(data.results || [])
-        setHasNextPage(!!data.next)
-        setHasPrevPage(!!data.previous)
-        setCurrentPage(page)
-        setTotalEvents(data.count || 0)
-      } else {
-        setEvents([])
-        setHasNextPage(false)
-        setHasPrevPage(false)
-        setCurrentPage(page)
-        setTotalEvents(0)
-      }
-    } catch (error) {
-      console.error('Error fetching events:', error)
-      setEvents([])
-      setHasNextPage(false)
-      setHasPrevPage(false)
-      setCurrentPage(page)
-      setTotalEvents(0)
-    } finally {
-      setLoading(false)
-    }
-  }
+  // Use staticEvents for all event lists
+  useEffect(() => {
+    setEvents(staticEvents);
+    setFeaturedEvents(staticEvents.filter(e => e.priority === 'high'));
+    setOngoingEvents([]); // Add logic if needed
+    setPastEvents([]); // Add logic if needed
+    setCategories([
+      { slug: 'webinar', name: 'Webinar' },
+      { slug: 'workshop', name: 'Workshop' },
+      { slug: 'competition', name: 'Competition' },
+    ]);
+    setLoading(false);
+    setTotalEvents(staticEvents.length);
+    setCurrentPage(1);
+  }, []);
 
-  // Fetch featured events
-  const fetchFeaturedEvents = async () => {
-    try {
-      const data = await apiService.getEvents(1, '', '', 'featured')
-      if (Array.isArray(data)) {
-        setFeaturedEvents(data)
-      } else if (data && Array.isArray(data.results)) {
-        setFeaturedEvents(data.results)
-      } else {
-        setFeaturedEvents([])
-      }
-    } catch (error) {
-      console.error('Error fetching featured events:', error)
-      setFeaturedEvents([])
-    }
-  }
-
-  // Fetch ongoing events
-  const fetchOngoingEvents = async () => {
-    try {
-      const data = await apiService.getEvents(1, '', '', 'ongoing');
-      setOngoingEvents(Array.isArray(data) ? data : []);
-    } catch (error) {
-      console.error('Error fetching ongoing events:', error);
-      setOngoingEvents([]);
-    }
-  };
-
-  // Fetch past events
-  const fetchPastEvents = async () => {
-    try {
-      const data = await apiService.getEvents(1, '', '', 'past')
-      if (data) {
-        setPastEvents(data.results || [])
-      } else {
-        setPastEvents([])
-      }
-    } catch (error) {
-      console.error('Error fetching past events:', error)
-      setPastEvents([])
-    }
-  }
-
-  // Fetch categories
-  const fetchCategories = async () => {
-    try {
-      const data = await apiService.getEventCategories();
-      setCategories(Array.isArray(data) ? data : []);
-    } catch (error) {
-      console.error('Error fetching categories:', error);
-      setCategories([]);
-    }
-  };
+  // Calculate paginated events
+  const paginatedEvents = events.slice((currentPage - 1) * eventsPerPage, currentPage * eventsPerPage);
+  const hasPrevPage = currentPage > 1;
+  const hasNextPage = currentPage * eventsPerPage < events.length;
 
   // Handle event registration
   const handleRegister = async (eventSlug) => {
@@ -206,24 +97,24 @@ export default function EventsPage() {
 
   // Handle read more - navigate to event details
   const handleReadMore = (eventSlug) => {
-    window.location.href = `/event/${eventSlug}`
+    window.location.assign(`/event/${eventSlug}`);
   }
 
   // Handle search
   const handleSearch = (e) => {
     e.preventDefault()
-    fetchEvents(1, searchQuery, selectedCategory)
+    // fetchEvents(1, searchQuery, selectedCategory)
   }
 
   // Handle category filter
   const handleCategoryFilter = (category) => {
     setSelectedCategory(category)
-    fetchEvents(1, searchQuery, category)
+    // fetchEvents(1, searchQuery, category)
   }
 
   // Handle pagination
   const handlePageChange = (page) => {
-    fetchEvents(page, searchQuery, selectedCategory)
+    // fetchEvents(page, searchQuery, selectedCategory)
   }
 
   // Format date
@@ -265,14 +156,6 @@ export default function EventsPage() {
     }
     return colors[priority] || 'bg-gray-500/20 text-gray-400 border-gray-500/30'
   }
-
-  useEffect(() => {
-    fetchEvents()
-    fetchFeaturedEvents()
-    fetchOngoingEvents()
-    fetchPastEvents()
-    fetchCategories()
-  }, [])
 
   if (loading && events.length === 0) {
     return (
@@ -452,7 +335,7 @@ export default function EventsPage() {
             </div>
 
             <div className="space-y-6">
-              {[...staticEvents, ...events].map((event) => (
+              {paginatedEvents.map((event) => (
                 <Card key={event.id} className="bg-slate-800 border-slate-700 hover:shadow-lg transition-shadow duration-200">
                   <CardContent className="p-6">
                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
@@ -535,7 +418,7 @@ export default function EventsPage() {
             {(hasNextPage || hasPrevPage) && (
               <div className="flex justify-center items-center gap-4 mt-12">
                 <Button
-                  onClick={() => handlePageChange(currentPage - 1)}
+                  onClick={() => setCurrentPage(currentPage - 1)}
                   disabled={!hasPrevPage}
                   className="bg-slate-700 hover:bg-slate-600 text-white disabled:opacity-50"
                 >
@@ -543,7 +426,7 @@ export default function EventsPage() {
                 </Button>
                 <span className="text-gray-400">Page {currentPage}</span>
                 <Button
-                  onClick={() => handlePageChange(currentPage + 1)}
+                  onClick={() => setCurrentPage(currentPage + 1)}
                   disabled={!hasNextPage}
                   className="bg-slate-700 hover:bg-slate-600 text-white disabled:opacity-50"
                 >

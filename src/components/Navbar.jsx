@@ -9,6 +9,9 @@ const Navbar = () => {
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
   const location = useLocation();
 
+  const isLoggedIn = !!localStorage.getItem('access_token');
+  const userRole = localStorage.getItem('role');
+
   useEffect(() => {
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
@@ -32,6 +35,12 @@ const Navbar = () => {
     { name: 'Contact', href: '/contact' },
   ];
 
+  let dynamicLinks = [];
+  if (isLoggedIn) {
+    dynamicLinks.push({ name: 'Internship', href: '/internships' });
+    dynamicLinks.push({ name: 'Dashboard', href: '/dashboard' });
+  }
+
   return (
     <nav className="sticky top-0 z-50 bg-slate-900/50 backdrop-blur-lg border-b border-slate-800">
       <div className="max-w-9xl mx-auto px-9">
@@ -46,7 +55,7 @@ const Navbar = () => {
 
           {/* Desktop Nav */}
           <div className="hidden lg:flex items-center space-x-8">
-            {navLinks.map((link) => {
+            {[...navLinks, ...dynamicLinks].map((link) => {
               const isActive = location.pathname === link.href
               return (
                 <Link
@@ -68,32 +77,34 @@ const Navbar = () => {
             })}
           </div>
 
-          <div className="hidden lg:flex items-center space-x-6">
-            <Link to="/login">
+          {!isLoggedIn && (
+            <div className="hidden lg:flex items-center space-x-6">
+              <Link to="/login">
+                <Button
+                  variant="ghost"
+                  className="relative text-gray-300 hover:text-white hover:bg-transparent font-medium text-sm px-0 transition-all duration-300 ease-out hover:scale-105
+                    after:content-[''] after:absolute after:left-0 after:right-0 after:bottom-0 after:h-0.5 after:bg-green-400 after:scale-x-0 after:transition-transform after:duration-300 after:origin-left
+                    hover:after:scale-x-100"
+                  style={{ overflow: 'visible' }}
+                >
+                  Login
+                </Button>
+              </Link>
+              <Link to="/guest">
+                <Button className="bg-green-400 hover:bg-green-500 text-black font-semibold px-6 py-2 rounded-md text-sm transition-all duration-300 ease-out hover:scale-105 hover:shadow-lg hover:shadow-green-400/25 transform">
+                  Get Started 
+                </Button>
+              </Link>
               <Button
+                onClick={toggleTheme}
                 variant="ghost"
-                className="relative text-gray-300 hover:text-white hover:bg-transparent font-medium text-sm px-0 transition-all duration-300 ease-out hover:scale-105
-                  after:content-[''] after:absolute after:left-0 after:right-0 after:bottom-0 after:h-0.5 after:bg-green-400 after:scale-x-0 after:transition-transform after:duration-300 after:origin-left
-                  hover:after:scale-x-100"
-                style={{ overflow: 'visible' }}
+                size="sm"
+                className="text-gray-300 hover:text-white hover:bg-slate-800/50 p-2 rounded-md transition-all duration-300 ease-out hover:scale-110 hover:rotate-12"
               >
-                Login
+                {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
               </Button>
-            </Link>
-            <Link to="/guest">
-              <Button className="bg-green-400 hover:bg-green-500 text-black font-semibold px-6 py-2 rounded-md text-sm transition-all duration-300 ease-out hover:scale-105 hover:shadow-lg hover:shadow-green-400/25 transform">
-                Get Started 
-              </Button>
-            </Link>
-            <Button
-              onClick={toggleTheme}
-              variant="ghost"
-              size="sm"
-              className="text-gray-300 hover:text-white hover:bg-slate-800/50 p-2 rounded-md transition-all duration-300 ease-out hover:scale-110 hover:rotate-12"
-            >
-              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-            </Button>
-          </div>
+            </div>
+          )}
 
           {/* Mobile Nav Toggle */}
           <div className="lg:hidden">
@@ -115,7 +126,7 @@ const Navbar = () => {
       {isOpen && (
         <div className="lg:hidden bg-slate-900/98 backdrop-blur-sm border-t border-slate-700/50">
           <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col space-y-4">
-            {navLinks.map((link) => {
+            {[...navLinks, ...dynamicLinks].map((link) => {
               const isActive = location.pathname === link.href
               return (
                 <Link

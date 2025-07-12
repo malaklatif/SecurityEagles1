@@ -15,20 +15,23 @@ import Labs from './pages/Labs';
 import LoadingScreen from './components/LoadingScreen';
 import Footer from './components/Footer';
 import { useState, useEffect } from 'react';
+import Dashboard from './pages/Dashboard';
+import EventDetailsPage from './pages/EventDetails';
+import { InternshipDetailPage } from './pages/Internships';
 
-// Wrapper component to access location
 function AppContent() {
   const location = useLocation();
   const isLoginPage = location.pathname === '/login';
   const isRegisterPage = location.pathname === '/register';
-  const hideNavbar = isLoginPage || isRegisterPage;
+  const isDashboardPage = location.pathname === '/dashboard';
+  const hideNavbar = isLoginPage || isRegisterPage || isDashboardPage;
 
   return (
     <div className="min-h-screen bg-slate-900">
       {!hideNavbar && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
+         <Route path="/about" element={<About />} />
         <Route path="/events" element={<Events />} />
         <Route path="/certify" element={<Certify />} />
         <Route path="/new" element={<New />} />
@@ -39,6 +42,9 @@ function AppContent() {
         <Route path="/guest" element={<Guest />} />
         <Route path="/documentation" element={<Documentation />} />
         <Route path="/labs" element={<Labs />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/event/:slug" element={<EventDetailsPage />} />
+        <Route path="/internships/:id" element={<InternshipDetailPage />} /> 
       </Routes>
       {!hideNavbar && <Footer />}
     </div>

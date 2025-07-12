@@ -6,25 +6,7 @@ import { Input } from "../components/ui/input"
 import { Badge } from "../components/ui/badge"
 import { Calendar, Clock, MapPin, Users, Star, ArrowLeft, Globe, Mail, Phone, User, Building, FileText, Share2, Heart, Eye, Tag, Import } from 'lucide-react'
 import { motion } from "framer-motion"
-import apiService from '../config/api'
-
-// API service functions for event details
-const eventApiService = {
-  async getEventDetails(slug) {
-    const response = await apiService.getEventDetails(slug)
-    return response
-  },
-
-  async registerForEvent(slug, registrationData = {}) {
-    const response = await apiService.registerForEvent(slug, registrationData)
-    return response
-  },
-
-  async unregisterFromEvent(slug) {
-    const response = await apiService.unregisterFromEvent(slug)
-    return response
-  }
-}
+import { staticEvents } from '../mockEvents'
 
 export default function EventDetailsPage() {
   const { slug } = useParams()
@@ -44,25 +26,13 @@ export default function EventDetailsPage() {
     return !!localStorage.getItem('access_token')
   }
 
-  // Fetch event details
-  const fetchEventDetails = async () => {
-    try {
-      setLoading(true)
-      const data = await eventApiService.getEventDetails(slug)
-      if (data) {
-        setEvent(data)
-        // Check if user is already registered
-        if (data.attendees && data.attendees.some(attendee => attendee.user_id === localStorage.getItem('user_id'))) {
-          setIsRegistered(true)
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching event details:', error)
-      setEvent(null)
-    } finally {
-      setLoading(false)
-    }
-  }
+  // Fetch event details from staticEvents
+  useEffect(() => {
+    setLoading(true);
+    const found = staticEvents.find(e => e.slug === slug);
+    setEvent(found || null);
+    setLoading(false);
+  }, [slug]);
 
   // Handle registration
   const handleRegister = async () => {
@@ -73,20 +43,13 @@ export default function EventDetailsPage() {
 
     setRegistering(true)
     try {
-      const result = await eventApiService.registerForEvent(slug, {
-        registration_data: registrationData,
-        notes: registrationData.notes
-      })
-      
-      if (result) {
-        setIsRegistered(true)
-        setEvent(prev => ({
-          ...prev,
-          attendee_count: prev.attendee_count + 1,
-          spots_remaining: prev.spots_remaining - 1
-        }))
-        alert('Successfully registered for the event!')
-      }
+      setIsRegistered(true);
+      setEvent(prev => ({
+        ...prev,
+        attendee_count: prev.attendee_count + 1,
+        spots_remaining: prev.spots_remaining - 1
+      }));
+      alert('Successfully registered for the event!');
     } catch (error) {
       console.error('Registration error:', error)
       alert('Registration failed. Please try again.')
@@ -99,17 +62,13 @@ export default function EventDetailsPage() {
   const handleUnregister = async () => {
     setRegistering(true)
     try {
-      const result = await eventApiService.unregisterFromEvent(slug)
-      
-      if (result) {
-        setIsRegistered(false)
-        setEvent(prev => ({
-          ...prev,
-          attendee_count: prev.attendee_count - 1,
-          spots_remaining: prev.spots_remaining + 1
-        }))
-        alert('Successfully unregistered from the event.')
-      }
+      setIsRegistered(false);
+      setEvent(prev => ({
+        ...prev,
+        attendee_count: prev.attendee_count - 1,
+        spots_remaining: prev.spots_remaining + 1
+      }));
+      alert('Successfully unregistered from the event.');
     } catch (error) {
       console.error('Unregistration error:', error)
       alert('Unregistration failed. Please try again.')
@@ -158,12 +117,6 @@ export default function EventDetailsPage() {
     }
     return colors[priority] || 'bg-gray-500/20 text-gray-400 border-gray-500/30'
   }
-
-  useEffect(() => {
-    if (slug) {
-      fetchEventDetails()
-    }
-  }, [slug])
 
   if (loading) {
     return (

@@ -1,15 +1,15 @@
 import axios from 'axios';
-
 // API Service Class using OOP principles
 class ApiService {
   constructor() {
-    this.baseURL = 'https://fifty-shirts-marry.loca.lt/api';
+    this.baseURL = 'https://bdf023177831.ngrok-free.app/api';
     this.client = axios.create({
       baseURL: this.baseURL,
       timeout: 10000,
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
+        "ngrok-skip-browser-warning": "69420"
       },
     });
 
